@@ -1,21 +1,22 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using Codist.Google.Entities;
 using Codist.Google.Enums;
 
 namespace Codist.Google
 {
-    using static GoogleUtils;
 
     public class GoogleTranslator : ITranslator
     {
 
         private static readonly List<TranslationLanguage> TargetLanguages;
         private static readonly List<TranslationLanguage> SourceLanguages;
+        private static readonly HttpClient client = new HttpClient();
 
 
         static GoogleTranslator()
@@ -89,7 +90,7 @@ namespace Codist.Google
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        private GoogleTransResult TranslateByHttp(string text, string from = "en", string to = "ru")
+        private async Task<GoogleTransResult> TranslateByHttpAsync(string text, string from = "en", string to = "ru")
         {
             if (!(text.Length > 0 && text.Length < 5000))
             {
@@ -97,57 +98,57 @@ namespace Codist.Google
             }
             text = text.Replace("\\", "");
 
-            var tk = GetTk(text);
-
+            var tk = GoogleUtils.GetTk(text);
             var uri = $"https://translate.google.cn/translate_a/single?client=webapp&sl={from}&tl={to}&hl=zh-CN&dt=t&ie=UTF-8&oe=UTF-8&ssel=6&tsel=3&kc=0&tk={tk}&q={HttpUtility.UrlEncode(text)}";
-            var html = string.Empty;
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
-            using (var response = httpWebRequest.GetResponse())
+
+            // Call asynchronous network methods in a try/catch block to handle exceptions.
+            try
             {
-                using (Stream stream = response.GetResponseStream())
+                HttpResponseMessage response = await client.GetAsync(uri);
+                response.EnsureSuccessStatusCode();
+                string html = await response.Content.ReadAsStringAsync();
+
+                // Above three lines can be replaced with new helper method below
+                // string responseBody = await client.GetStringAsync(uri);
+
+                if (html.Contains("/sorry/index?continue=") && html.Contains("302 Moved"))
                 {
-                    if (stream == null)
+                    return new GoogleTransResult()
                     {
-                        return null;
-                    }
-                    using (var sr = new StreamReader(stream))
-                    {
-                        html = sr.ReadToEnd();
-                    }
+                        From = "Unknown",
+                        TargetText = "Current IP traffic anomaly, can not be translated!"
+                    };
                 }
-            }
+                if (html.Contains("Error 403!"))
+                {
+                    return new GoogleTransResult()
+                    {
+                        From = "Unknown",
+                        TargetText = "Error 403!"
+                    };
+                }
 
-            if (html.Contains("/sorry/index?continue=") && html.Contains("302 Moved"))
+                JArray jArray = JArray.Parse(html);
+                var resarry = jArray[0];
+                var str = new System.Text.StringBuilder();
+                foreach (JArray res in resarry)
+                {
+                    str.Append(res[0].ToString());
+                }
+                return new GoogleTransResult()
+                {
+                    From = jArray[2].ToString(),
+                    TargetText = str.ToString()
+                };
+            }
+            catch (HttpRequestException e)
             {
                 return new GoogleTransResult()
                 {
-                    From = "Unknown",
-                    TargetText = "Current IP traffic anomaly, can not be translated!"
+                    From = "Exception Caught!",
+                    TargetText = $"Message :{e.Message}"
                 };
             }
-            if (html.Contains("Error 403!"))
-            {
-                return new GoogleTransResult()
-                {
-                    From = "Unknown",
-                    TargetText = "Error 403!"
-                };
-            }
-
-            dynamic tempResult = Newtonsoft.Json.JsonConvert.DeserializeObject(html);
-            var resarry = Newtonsoft.Json.JsonConvert.DeserializeObject(tempResult[0].ToString());
-            var length = (resarry.Count);
-            var str = new System.Text.StringBuilder();
-            for (int i = 0; i < length; i++)
-            {
-                var res = Newtonsoft.Json.JsonConvert.DeserializeObject(resarry[i].ToString());
-                str.Append(res[0].ToString());
-            }
-            return new GoogleTransResult()
-            {
-                From = tempResult[2].ToString(),
-                TargetText = str.ToString()
-            };
         }
 
         public string GetIdentity()
@@ -195,7 +196,7 @@ namespace Codist.Google
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <returns></returns>
-        public TranslationResult Translate(string text, string @from = "en", string to = "ru")
+        public async Task<TranslationResult> TranslateAsync(string text, string @from = "en", string to = "ru")
         {
             TranslationResult result = new TranslationResult()
             {
@@ -220,7 +221,7 @@ namespace Codist.Google
                 try
                 {
                     result.TranslationResultTypes = TranslationResultTypes.Successed;
-                    GoogleTransResult googleTransResult = TranslateByHttp(text, from, to);
+                    GoogleTransResult googleTransResult = await TranslateByHttpAsync(text, from, to);
                     result.SourceLanguage = googleTransResult.From;
                     result.TargetText = googleTransResult.TargetText;
                 }

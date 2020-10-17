@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -244,7 +245,7 @@ namespace Codist.QuickInfo
 						WpfHelper.SetUITextRenderOptions(p, true);
 					}
 					if (p.Children.Count > 1) {
-						OverrideDiagnosticInfo(p);
+                        _ = OverrideDiagnosticInfoAsync(p);
 						p.SetValue(TextBlock.FontFamilyProperty, ThemeHelper.ToolTipFont);
 						p.SetValue(TextBlock.FontSizeProperty, ThemeHelper.ToolTipFontSize);
 					}
@@ -259,7 +260,7 @@ namespace Codist.QuickInfo
 					this.GetParent<Border>().Collapse();
 				}
 
-				void OverrideDiagnosticInfo(StackPanel panel) {
+				async Task OverrideDiagnosticInfoAsync(StackPanel panel) {
 					var infoPanel = panel.Children[1].GetFirstVisualChild<ItemsControl>()?.GetFirstVisualChild<StackPanel>();
 					if (infoPanel == null) {
 						// try the first item (symbol title may be absent)
@@ -292,7 +293,7 @@ namespace Codist.QuickInfo
 						}
 						//google translate
 						var sourceText = ((System.Windows.Documents.Run)cp.Inlines.LastInline).Text;
-						TranslationResult transResult = _googleTranslator.Translate(sourceText, "en", "ru");
+						TranslationResult transResult = await _googleTranslator.TranslateAsync(sourceText, "en", "ru");
 						((System.Windows.Documents.Run)cp.Inlines.LastInline).Text = sourceText + "\r\n" + transResult.TargetText;
 
 						TextEditorWrapper.CreateFor(cp);

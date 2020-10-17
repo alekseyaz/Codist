@@ -9,6 +9,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AppHelpers;
 using Codist.Controls;
+using Codist.Google;
+using Codist.Google.Entities;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Language.Intellisense;
@@ -207,6 +209,8 @@ namespace Codist.QuickInfo
 
 			sealed class Overrider : StackPanel, IInteractiveQuickInfoContent, IQuickInfoHolder
 			{
+				private readonly ITranslator _googleTranslator = new GoogleTranslator();
+
 				static readonly Thickness __DocPanelBorderMargin = new Thickness(0, 0, -9, 3);
 				static readonly Thickness __DocPanelBorderPadding = new Thickness(0, 0, 9, 0);
 				static readonly Thickness __TitlePanelMargin = new Thickness(0, 0, 30, 6);
@@ -286,6 +290,11 @@ namespace Codist.QuickInfo
 						else {
 							cp.SetGlyph(ThemeHelper.GetImage(KnownImageIds.StatusInformation));
 						}
+						//google translate
+						var sourceText = ((System.Windows.Documents.Run)cp.Inlines.LastInline).Text;
+						TranslationResult transResult = _googleTranslator.Translate(sourceText, "en", "ru");
+						((System.Windows.Documents.Run)cp.Inlines.LastInline).Text = sourceText + "\r\n" + transResult.TargetText;
+
 						TextEditorWrapper.CreateFor(cp);
 					}
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace VisualStudioTranslator.Google
+namespace Codist.Google
 {
     /// <summary>
     /// Copyright statement: This article is the original article of the blogger and follows the CC 4.0 BY-SA copyright agreement. Please attach the original source link and this statement for reprinting。

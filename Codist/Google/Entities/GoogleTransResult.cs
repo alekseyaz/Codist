@@ -1,4 +1,4 @@
-﻿namespace VisualStudioTranslator.Google.Entities
+﻿namespace Codist.Google.Entities
 {
     internal class GoogleTransResult
     {

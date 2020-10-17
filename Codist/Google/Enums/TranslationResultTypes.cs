@@ -1,4 +1,4 @@
-﻿namespace VisualStudioTranslator.Enums
+﻿namespace Codist.Google.Enums
 {
     public enum TranslationResultTypes
     {

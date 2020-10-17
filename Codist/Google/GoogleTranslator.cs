@@ -4,11 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
-using VisualStudioTranslator.Entities;
-using VisualStudioTranslator.Enums;
-using VisualStudioTranslator.Google.Entities;
+using Codist.Google.Entities;
+using Codist.Google.Enums;
 
-namespace VisualStudioTranslator.Google
+namespace Codist.Google
 {
     using static GoogleUtils;
 

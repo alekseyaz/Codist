@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VisualStudioTranslator;
-using VisualStudioTranslator.Entities;
-using VisualStudioTranslator.Google;
+using Codist.Google.Entities;
+using Codist.Google;
 
 namespace TestProject
 {

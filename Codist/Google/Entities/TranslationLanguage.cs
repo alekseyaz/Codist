@@ -1,4 +1,4 @@
-﻿namespace VisualStudioTranslator.Entities
+﻿namespace Codist.Google.Entities
 {
 	public class TranslationLanguage
 	{

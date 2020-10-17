@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using VisualStudioTranslator.Entities;
+using Codist.Google.Entities;
 
-namespace VisualStudioTranslator
+namespace Codist.Google
 {
     public interface ITranslator
     {

@@ -1,6 +1,6 @@
-﻿using VisualStudioTranslator.Enums;
+﻿using Codist.Google.Enums;
 
-namespace VisualStudioTranslator.Entities
+namespace Codist.Google.Entities
 {
     public class TranslationResult
     {

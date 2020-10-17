@@ -85,6 +85,13 @@
     </Compile>
     <Compile Include="Controls\LayoutOverrider.cs" />
     <Compile Include="Controls\NumericUpDown.cs" />
+    <Compile Include="Google\Entities\GoogleTransResult.cs" />
+    <Compile Include="Google\Entities\TranslationLanguage.cs" />
+    <Compile Include="Google\Entities\TranslationResult.cs" />
+    <Compile Include="Google\Enums\TranslationResultTypes.cs" />
+    <Compile Include="Google\GoogleTranslator.cs" />
+    <Compile Include="Google\GoogleUtils.cs" />
+    <Compile Include="Google\ITranslator.cs" />
     <Compile Include="IconIds.cs" />
     <Compile Include="NaviBar\NaviBar.cs" />
     <Compile Include="Options\CommonControls.cs" />
@@ -509,6 +516,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -621,7 +629,7 @@
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.2\build\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.2\build\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets')" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_StartDate="2000/1/1" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateFileVersion="True" BuildVersion_StartDate="2000/1/1" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.16.0.102\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.16.0.102\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
